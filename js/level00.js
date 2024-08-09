@@ -1,3 +1,4 @@
+//hola chavales xd xd xd xd xd xd 
 const canvas = document.getElementById("tablero");
 const ctx = canvas.getContext("2d");
 
