@@ -53,11 +53,17 @@ class player{
     };
 
     moveY(y){
-        this.y += this.speed*y;
+        const newY = this.y + this.speed * y;
+        if (newY >= 0 && newY + this.h <= canvas.height) {
+            this.y = newY;
+        }
     }
 
     moveX(x){
-        this.x += this.speed*x;
+        const newX = this.x + this.speed * x;
+        if (newX >= 0 && newX + this.w <= canvas.width) {
+            this.x = newX;
+        }
     }
 
     clear(){
