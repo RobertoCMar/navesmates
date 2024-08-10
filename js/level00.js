@@ -26,6 +26,7 @@ class gameArea{
     }
 
     motion(){
+    if(this.keyPressed){
         if(this.key == "ArrowDown" || this.key == "KeyS"){
             this.player.moveY(1)
         } else if(this.key == "ArrowUp" || this.key == "KeyW"){
@@ -34,7 +35,10 @@ class gameArea{
             this.player.moveX(1);
         } else if(this.key == "ArrowLeft" || this.key == "KeyA"){
             this.player.moveX(-1);
+        } else if(this.key == "Space"){
+            this.player.fire(this.player.x, this.player.y)
         }
+    }
     }
 
     update(){
@@ -84,6 +88,13 @@ class player extends sprite{
     draw(){
         ctx.fillStyle = this.color
         ctx.fillRect(this.x, this.y, this.w, this.h)
+    }
+
+   async fire(x, y){
+        const shoot = new sprite(x+50, y+12, 50, 25, 20)
+        shoot.draw()
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        shoot.clear();
     }
 }
 
