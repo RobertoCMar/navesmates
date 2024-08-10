@@ -105,7 +105,7 @@ class player extends sprite{
         shoot.draw();
         let reachBarrier = false
         while (shoot.x < canvas.width-60) {
-            if( (shoot.x > canvas.width * 0.5 + 10) && !reachBarrier){
+            if( (shoot.x > canvas.width * 0.5) && !reachBarrier){
                 this.shooting = false
                 barrier.draw()
                 reachBarrier = true
