@@ -34,7 +34,7 @@ class gameArea{
             this.player.moveX(1);
         } else if(this.key == "ArrowLeft" || this.key == "KeyA"){
             this.player.moveX(-1);
-        } else if(this.key == "Space" &&  !this.player.shooting){
+        } else if(this.key == "Space"){
             this.player.fire(this.player.x, this.player.y)
         }
     }
@@ -99,13 +99,16 @@ class player extends sprite{
         }
     }
    async fire(x, y){
+    if(!this.shooting){
         const shoot = new sprite(x+50, y+12, 50, 25, 20, "yellow")
         this.shooting = true
         shoot.draw();
+        let reachBarrier = false
         while (shoot.x < canvas.width-60) {
-            if(shoot.x > canvas.width * 0.5){
+            if( (shoot.x > canvas.width * 0.5 + 10) && !reachBarrier){
                 this.shooting = false
                 barrier.draw()
+                reachBarrier = true
             }
             shoot.clear()
             shoot.moveX(1)
@@ -114,6 +117,7 @@ class player extends sprite{
         }
         shoot.clear();
     }
+}
 }
 const barrier = new sprite(canvas.width*0.5, 0, 5, canvas.height, 0, "red")
 barrier.draw()
