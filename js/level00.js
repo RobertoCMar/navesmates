@@ -3,8 +3,7 @@ const canvas = document.getElementById("tablero");
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight - window.innerHeight*0.1
 const ctx = canvas.getContext("2d");
-ctx.fillStyle = "red"
-ctx.fillRect(canvas.width/2, 0, 5, canvas.height)
+
 class gameArea{
    constructor({x = 0, y = 0, w, h, speed = 10, color}){
         this.keyPressed = false,
@@ -50,12 +49,13 @@ class gameArea{
 }
 
 class sprite{
-    constructor(x, y, w, h, speed){
+    constructor(x, y, w, h, speed, color){
         this.x = x,
         this.y = y,
         this.w = w,
         this.h = h,
-        this.speed = speed
+        this.speed = speed,
+        this.color = color
     }
     moveX(x) {
             this.x += this.speed * x;
@@ -71,15 +71,14 @@ class sprite{
     }
 
     draw(){
-        ctx.fillStyle = "yellow"
+        ctx.fillStyle = this.color
         ctx.fillRect(this.x, this.y, this.w, this.h)
     }
 }
 
 class player extends sprite{
     constructor(x, y, w, h, speed, color) {
-        super(x, y, w, h, speed);
-        this.color = color
+        super(x, y, w, h, speed, color);
         this.shooting = false
     };
     
@@ -100,12 +99,13 @@ class player extends sprite{
         }
     }
    async fire(x, y){
-        const shoot = new sprite(x+50, y+12, 50, 25, 20)
+        const shoot = new sprite(x+50, y+12, 50, 25, 20, "yellow")
         this.shooting = true
         shoot.draw();
         while (shoot.x < canvas.width-60) {
             if(shoot.x > canvas.width * 0.5){
                 this.shooting = false
+                barrier.draw()
             }
             shoot.clear()
             shoot.moveX(1)
@@ -115,7 +115,8 @@ class player extends sprite{
         shoot.clear();
     }
 }
-
+const barrier = new sprite(canvas.width*0.5, 0, 5, canvas.height, 0, "red")
+barrier.draw()
 const game = new gameArea({w: 50, h: 50, color: "blue"});
 game.player.draw()
 game.update()
