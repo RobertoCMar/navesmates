@@ -35,7 +35,7 @@ class gameArea{
             this.player.moveX(1);
         } else if(this.key == "ArrowLeft" || this.key == "KeyA"){
             this.player.moveX(-1);
-        } else if(this.key == "Space"){
+        } else if(this.key == "Space" &&  !this.player.shooting){
             this.player.fire(this.player.x, this.player.y)
         }
     }
@@ -58,15 +58,12 @@ class sprite{
         this.speed = speed
     }
     moveX(x) {
-        if (this.x + this.speed * x >= 0 && this.x + this.speed * x + this.w <= canvas.width * 0.5) {
             this.x += this.speed * x;
-        }
     }
 
     moveY(y) {
-        if (this.y + this.speed * y >= 0 && this.y + this.speed * y + this.h <= canvas.height) {
             this.y += this.speed * y;
-        }
+        
     }
 
     clear(){
@@ -83,6 +80,7 @@ class player extends sprite{
     constructor(x, y, w, h, speed, color) {
         super(x, y, w, h, speed);
         this.color = color
+        this.shooting = false
     };
     
     draw(){
@@ -90,10 +88,30 @@ class player extends sprite{
         ctx.fillRect(this.x, this.y, this.w, this.h)
     }
 
+    moveX(x) {
+        if (this.x + this.speed * x >= 0 && this.x + this.speed * x + this.w <= canvas.width * 0.5) {
+            this.x += this.speed * x;
+        }
+    }
+
+    moveY(y) {
+        if (this.y + this.speed * y >= 0 && this.y + this.speed * y + this.h <= canvas.height) {
+            this.y += this.speed * y;
+        }
+    }
    async fire(x, y){
         const shoot = new sprite(x+50, y+12, 50, 25, 20)
-        shoot.draw()
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        this.shooting = true
+        shoot.draw();
+        while (shoot.x < canvas.width-60) {
+            if(shoot.x > canvas.width * 0.5){
+                this.shooting = false
+            }
+            shoot.clear()
+            shoot.moveX(1)
+            shoot.draw()
+            await new Promise(resolve => setTimeout(resolve, 100))
+        }
         shoot.clear();
     }
 }
