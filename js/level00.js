@@ -1,7 +1,10 @@
 
 const canvas = document.getElementById("tablero");
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
 const ctx = canvas.getContext("2d");
-
+ctx.fillStyle = "red"
+ctx.fillRect(canvas.width/2, 0, 5, canvas.height)
 class gameArea{
    constructor({x = 0, y = 0, w, h, c = "red", speed = 10}){
         this.keyPressed = false,
@@ -59,7 +62,7 @@ class player{
     }
 
     moveX(x) {
-        if (this.x + this.speed * x >= 0 && this.x + this.speed * x + this.w <= canvas.width) {
+        if (this.x + this.speed * x >= 0 && this.x + this.speed * x + this.w <= canvas.width * 0.5) {
             this.x += this.speed * x;
         }
     }

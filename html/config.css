@@ -5,6 +5,12 @@ body {
     margin: 0;
 }
 
+#canvas-container{
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
 canvas{
-    outline: 1px solid red;
+  border: 1px solid red;
 }
