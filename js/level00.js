@@ -1,4 +1,4 @@
-//hola chavales xd xd xd xd xd xd 
+
 const canvas = document.getElementById("tablero");
 const ctx = canvas.getContext("2d");
 
@@ -52,19 +52,18 @@ class player{
         this.speed = speed
     };
 
-    moveY(y){
-        const newY = this.y + this.speed * y;
-        if (newY >= 0 && newY + this.h <= canvas.height) {
-            this.y = newY;
+    moveY(y) {
+        if (this.y + this.speed * y >= 0 && this.y + this.speed * y + this.h <= canvas.height) {
+            this.y += this.speed * y;
         }
     }
 
-    moveX(x){
-        const newX = this.x + this.speed * x;
-        if (newX >= 0 && newX + this.w <= canvas.width) {
-            this.x = newX;
+    moveX(x) {
+        if (this.x + this.speed * x >= 0 && this.x + this.speed * x + this.w <= canvas.width) {
+            this.x += this.speed * x;
         }
     }
+
 
     clear(){
         ctx.clearRect(this.x, this.y, this.w, this.h)
