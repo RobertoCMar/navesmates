@@ -1,15 +1,15 @@
 
 const canvas = document.getElementById("tablero");
 canvas.width = window.innerWidth
-canvas.height = window.innerHeight
+canvas.height = window.innerHeight - window.innerHeight*0.1
 const ctx = canvas.getContext("2d");
 ctx.fillStyle = "red"
 ctx.fillRect(canvas.width/2, 0, 5, canvas.height)
 class gameArea{
-   constructor({x = 0, y = 0, w, h, c = "red", speed = 10}){
+   constructor({x = 0, y = 0, w, h, speed = 10, color}){
         this.keyPressed = false,
         this.key = null,
-        this.player = new player(x, y, w, h, c, speed),
+        this.player = new player(x, y, w, h, speed, color),
         this.control()
    }
 
@@ -45,15 +45,19 @@ class gameArea{
     }
 }
 
-class player{
-    constructor(x, y, w, h, c, speed) {
+class sprite{
+    constructor(x, y, w, h, speed){
         this.x = x,
         this.y = y,
         this.w = w,
         this.h = h,
-        this.c = c,
         this.speed = speed
-    };
+    }
+    moveX(x) {
+        if (this.x + this.speed * x >= 0 && this.x + this.speed * x + this.w <= canvas.width * 0.5) {
+            this.x += this.speed * x;
+        }
+    }
 
     moveY(y) {
         if (this.y + this.speed * y >= 0 && this.y + this.speed * y + this.h <= canvas.height) {
@@ -61,24 +65,29 @@ class player{
         }
     }
 
-    moveX(x) {
-        if (this.x + this.speed * x >= 0 && this.x + this.speed * x + this.w <= canvas.width * 0.5) {
-            this.x += this.speed * x;
-        }
-    }
-
-
     clear(){
         ctx.clearRect(this.x, this.y, this.w, this.h)
     }
 
     draw(){
-        ctx.fillStyle = this.c;
+        ctx.fillStyle = "yellow"
         ctx.fillRect(this.x, this.y, this.w, this.h)
     }
 }
 
-const game = new gameArea({w: 50, h: 50, c: "blue"});
+class player extends sprite{
+    constructor(x, y, w, h, speed, color) {
+        super(x, y, w, h, speed);
+        this.color = color
+    };
+    
+    draw(){
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.x, this.y, this.w, this.h)
+    }
+}
+
+const game = new gameArea({w: 50, h: 50, color: "blue"});
 game.player.draw()
 game.update()
 
