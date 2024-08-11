@@ -81,10 +81,11 @@ class sprite{
 }
 
 class player extends sprite{
-    constructor(x, y, w, h, speed, color) {
+    constructor(x, y, w, h, speed, color, health) {
         super(x, y, w, h, speed, color);
         this.shooting = false
         this.direction = "right";
+        this.health = health;
     };
     
     draw(){
@@ -103,6 +104,15 @@ class player extends sprite{
             this.y += this.speed * y;
         }
     }
+
+    addhealth(n){
+        this.health += n;
+    }
+
+    damage(n){
+        this.health -= n
+    }
+
    async fire(x, y){
     if(!this.shooting){
  //ayuda jefesita :,,v       const shoot = new sprite(x+50, y+12, 50, 25, 20, "yellow")
@@ -160,7 +170,7 @@ class player extends sprite{
 }
 const barrier = new sprite(canvas.width*0.5, 0, 5, canvas.height, 0, "red")
 barrier.draw()
-const game = new gameArea({w: 50, h: 50, color: "blue"});
+const game = new gameArea({w: 50, h: 50, color: "blue", health: 100});
 game.player.draw()
 game.update()
 
