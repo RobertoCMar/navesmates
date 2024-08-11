@@ -107,19 +107,23 @@ class player extends sprite{
     if(!this.shooting){
  //ayuda jefesita :,,v       const shoot = new sprite(x+50, y+12, 50, 25, 20, "yellow")
         let shoot;
+        const bulletWidth = 50
+        const bulletHeight = 25
         const direction = this.direction;
+        const bulletSpeed = 20
+        const bulletColor = "yellow"
         switch (direction){
             case "up":
-                shoot = new sprite(x-12, y-50, 25, 50, 20, "yellow");
+                shoot = new sprite(x+Math.floor(bulletHeight*0.5), y-bulletWidth, bulletHeight, bulletWidth, bulletSpeed, bulletColor);
             break;
             case "down":
-                shoot = new sprite(x-12, y-50, 25, 50, 20, "yellow");
+                shoot = new sprite(x+Math.floor(bulletHeight*0.5), y+bulletWidth, bulletHeight, bulletWidth, bulletSpeed, bulletColor);
             break;
             case "left":
-                shoot = new sprite(x-50, y+12, 50, 25, 20, "yellow");
+                shoot = new sprite(x-bulletWidth, y+Math.floor(bulletHeight*0.5), bulletWidth, bulletHeight, bulletSpeed, bulletColor);
             break;
             case "right":
-                shoot = new sprite(x+50, y+12, 50, 25, 20, "yellow");
+                shoot = new sprite(x+bulletWidth, y+Math.floor(bulletHeight*0.5), bulletWidth, bulletHeight, bulletSpeed, bulletColor);
             break;
         }
         this.shooting = true
