@@ -6,10 +6,10 @@ canvas.height = window.innerHeight - window.innerHeight*0.1
 const ctx = canvas.getContext("2d");
 
 class gameArea{
-   constructor({x = 0, y = 0, width, height, speed, color}){
+   constructor({x = 0, y = 0, width, height, speed, image}){
         this.keyPressed = false,
         this.key = null,
-        this.player = new player({x, y, width, height, speed, color}),
+        this.player = new player({x, y, width, height, speed, image}),
         this.control()
    }
 
@@ -93,11 +93,12 @@ class sprite{
 
 class player extends sprite{
     constructor({
-            x, y, width, height, color, direction = "right",
+            x, y, width, height, image, direction = "right",
             speed = 10, health = 100, damage = 10, 
             atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCooldown = 1000, atkColor = "yellow"
         }) {
-        super({x, y, width, height, speed, color});
+        super({x, y, width, height, speed});
+        this.image = image
         this.shooting = false
         this.direction = direction;
         this.health = health;
@@ -112,7 +113,7 @@ class player extends sprite{
     
     draw(){
         ctx.fillStyle = this.color
-        ctx.fillRect(this.x, this.y, this.width, this.height)
+        ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
     }
 
     moveX(x) { 
@@ -245,9 +246,12 @@ class player extends sprite{
     
 }
 }
-const enemy = new player({x: 400, y: 400, width: 50, height: 50, speed: 10, color: "red"})
+const boo = document.getElementById("boo")
+ctx.drawImage(boo, 100, 100, 20, 20);
+const enemy = new player({image: boo, x: 400, y: 400, width: 50, height: 50, speed: 10, color: "red"})
 enemy.draw()
-const game = new gameArea({x: 0, y: 0, width: 50, height: 50, speed: 10, color: "blue"});
+// Nmms se ve bien cagado XDDDDD
+const game = new gameArea({image: boo, x: 0, y: 0, width: 50, height: 50, speed: 10, color: "blue"});
 game.player.draw()
 game.update()
 
