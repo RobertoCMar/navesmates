@@ -247,7 +247,6 @@ class player extends sprite{
 }
 }
 const boo = document.getElementById("boo")
-ctx.drawImage(boo, 100, 100, 20, 20);
 const enemy = new player({image: boo, x: 400, y: 400, width: 50, height: 50, speed: 10, color: "red"})
 enemy.draw()
 // Nmms se ve bien cagado XDDDDD
