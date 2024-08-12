@@ -39,7 +39,8 @@ class gameArea{
         } else if(this.key == "ArrowLeft" || this.key == "KeyA"){
             this.player.moveX(-1);
             this.player.direction = "left";
-        } else if(this.key == "Space"){
+        } else if(this.key == "Space" && !this.player.shooting){
+            this.player.fireCooldown()
             this.player.fire(this.player.x, this.player.y)
         }
     }
@@ -93,8 +94,8 @@ class sprite{
 class player extends sprite{
     constructor({
             x, y, width, height, color, direction = "right",
-            speed = 10, health = 100, 
-            damage = 10, atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkColor = "yellow"
+            speed = 10, health = 100, damage = 10, 
+            atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCooldown = 1000, atkColor = "yellow"
         }) {
         super({x, y, width, height, speed, color});
         this.shooting = false
@@ -105,6 +106,7 @@ class player extends sprite{
         this.atkWidth = atkWidth
         this.atkHeight = atkHeight
         this.atkSpeed = atkSpeed
+        this.atkCooldown = atkCooldown
         this.atkColor = atkColor
     };
     
@@ -159,9 +161,16 @@ class player extends sprite{
             this.draw()
         }
     }
+//Para los disparos primero se llama al metodo fireCooldown que se encarga de los booleanos, y luego al metodo fire...
+//Este proceso se debe hacer dentro de un condicional que verifique si player está disparando
+//Así se soluciona el spam :vV:v:v xdXdxdxd
+    async fireCooldown() {
+        this.shooting = true;
+        await new Promise(resolve => setTimeout(resolve, this.atkCooldown))
+        this.shooting = false;
+    }
 
    async fire(x, y){
-    if(!this.shooting){
  //ayuda jefesita :,,v       const shoot = new sprite(x+50, y+12, 50, 25, 20, "yellow")
         let shoot;
         const direction = this.direction
@@ -207,12 +216,10 @@ class player extends sprite{
                 });
             break;
         }
-        this.shooting = true
         shoot.draw();
         while (shoot.x < canvas.width-60 && shoot.y < canvas.height - 60 && shoot.y > 0 && shoot.x > 0) {
             if(shoot.isInContact(enemy.x, enemy.y, enemy.width, enemy.height)){
                 shoot.clear()
-                this.shooting = false
                 enemy.minusHealth(this.damage)
                 return
             }
@@ -235,8 +242,7 @@ class player extends sprite{
             await new Promise(resolve => setTimeout(resolve, 100))
         }
         shoot.clear();
-        this.shooting = false
-    }
+    
 }
 }
 const enemy = new player({x: 400, y: 400, width: 50, height: 50, speed: 10, color: "red"})
