@@ -10,8 +10,13 @@ class gameArea{
         this.keyPressed = false,
         this.key = null,
         this.player = new player({x, y, width, height, speed, image}),
+        this.entities = [this.player],
         this.control()
    }
+
+    addEntity(entity) {
+        this.entities.push(entity);
+    }
 
     control(){
        window.addEventListener("keydown", (k) => {
@@ -47,9 +52,13 @@ class gameArea{
     }
 
     update(){
-        this.player.clear();
+        this.entities.forEach(entity => {
+            entity.clear();
+        });
         this.motion()
-        this.player.draw()
+        this.entities.forEach(entity => {
+            entity.draw();
+        });
         requestAnimationFrame( () => this.update() )
     }
 }
@@ -115,7 +124,7 @@ class player extends sprite{
         ctx.fillStyle = this.color
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
     }
-
+    
     moveX(x) { 
         if(this.direction != "left" && this.direction != "right"){
             return
@@ -252,5 +261,6 @@ enemy.draw()
 // Nmms se ve bien cagado XDDDDD
 const game = new gameArea({image: boo, x: 0, y: 0, width: 50, height: 50, speed: 10});
 game.player.draw()
+game.addEntity(enemy);
 game.update()
 
