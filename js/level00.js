@@ -1,5 +1,6 @@
 
 const canvas = document.getElementById("tablero");
+const coordenadas = document.getElementById("coordenadas");
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight - window.innerHeight*0.1
 const ctx = canvas.getContext("2d");
@@ -91,13 +92,13 @@ class sprite{
 
 class player extends sprite{
     constructor({
-            x, y, width, height, color, 
+            x, y, width, height, color, direction = "right",
             speed = 10, health = 100, 
             damage = 10, atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkColor = "yellow"
         }) {
         super({x, y, width, height, speed, color});
         this.shooting = false
-        this.direction = "right";
+        this.direction = direction;
         this.health = health;
         this.lives = true
         this.damage = damage
@@ -113,21 +114,35 @@ class player extends sprite{
     }
 
     moveX(x) { 
+        if(this.direction != "left" && this.direction != "right"){
+            return
+        }
         if (this.x + this.speed * x >= 0 && this.x + this.speed * x + this.width <= canvas.width) {
                 this.x += this.speed * x;
                 if(this.isInContact(enemy.x, enemy.y, enemy.width, enemy.height)){
-                    this.x -= this.speed * x
+                    if(this.direction == "right")
+                        this.x = enemy.x - enemy.width - 2
+                    else if(this.direction == "left")
+                        this.x = enemy.x + enemy.width + 2
                 }
         }
+        coordenadas.innerText = `X: ${this.x}, Y: ${this.y}, Direction: ${this.direction}`
     }
 
     moveY(y) {
+        if(this.direction != "up" && this.direction != "down"){
+            return
+        }
         if (this.y + this.speed * y >= 0 && this.y + this.speed * y + this.height <= canvas.height) {
                 this.y += this.speed * y;
             if(this.isInContact(enemy.x, enemy.y, enemy.width, enemy.height)){
-                this.y -= this.speed * y;
-            }
+                if(this.direction == "down")
+                    this.y = enemy.y - enemy.height - 2;
+                else if(this.direction == "up")
+                    this.y = enemy.y + enemy.height + 2;
+            }  
         }
+        coordenadas.innerText = `X: ${this.x}, Y: ${this.y}, Direction: ${this.direction}`
     }
 
     addHealth(n){
