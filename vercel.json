@@ -1,0 +1,10 @@
+{
+    "cleanUrls": true,
+    "redirects":[
+        {
+            "source": "/",
+            "destination": "./level00.html",
+            "permanent": true
+        }
+    ]
+}
