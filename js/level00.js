@@ -5,6 +5,10 @@ canvas.width = window.innerWidth
 canvas.height = window.innerHeight - window.innerHeight*0.1
 const ctx = canvas.getContext("2d");
 
+function goToMenu() {
+    window.location.href = "menu.html";
+}
+
 class gameArea{
    constructor({x = 0, y = 0, width, height, speed, image}){
         this.keyPressed = false,
