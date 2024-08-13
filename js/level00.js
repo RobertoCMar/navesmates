@@ -118,13 +118,49 @@ class player extends sprite{
         this.atkSpeed = atkSpeed
         this.atkCooldown = atkCooldown
         this.atkColor = atkColor
+        this.colorLife = "green"
+        this.colorLifeB = "red"
     };
     
+    clear() {
+        ctx.clearRect(this.x - 1, this.y - 1, this.width + 2, this.height + 2);
+        
+        const healthBarWidth = this.width;
+        let healthBarY;
+
+        if (this.y > canvas.height * 0.1) { 
+            healthBarY = this.y - this.height - 2;
+        } else {
+            healthBarY = this.y + this.height + 2;
+        }
+
+        ctx.clearRect(this.x - 1, healthBarY - 1, healthBarWidth + 2, this.height + 2);
+    }
+
     draw(){
         ctx.fillStyle = this.color
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
+        this.drawHealthBar();
     }
     
+    drawHealthBar(){
+        const healthBarWidth = this.width;
+        const healthBarX = this.x;
+        
+        let healthBarY;
+        if (this.y > canvas.height * 0.1) { 
+            healthBarY = this.y - this.height - 2;  // Barra arriba del jugador :v
+        } else {
+            healthBarY = this.y + this.height + 2;  // Barra abajo del jugador :v
+        }
+        
+        ctx.fillStyle = this.colorLifeB;
+        ctx.fillRect(healthBarX, healthBarY, healthBarWidth, this.height);
+        
+        ctx.fillStyle = this.colorLife;
+        ctx.fillRect(healthBarX, healthBarY, healthBarWidth * (this.health / 100), this.height);
+    }
+
     moveX(x) { 
         if(this.direction != "left" && this.direction != "right"){
             return
