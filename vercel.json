@@ -3,7 +3,7 @@
     "redirects":[
         {
             "source": "/",
-            "destination": "./level00.html",
+            "destination": "./menu.html",
             "permanent": true
         }
     ]
