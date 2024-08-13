@@ -141,8 +141,42 @@ class player extends sprite{
 
     draw(){
         if (this.lives) {
-            ctx.fillStyle = this.color
-            ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
+            const direction = this.direction;
+            let rotation
+            switch (direction) {
+                case "right":
+                    rotation = Math.PI; //180 grados
+                    break;
+                case "left":
+                    rotation = 0;
+                    break;
+                case "down":
+                    rotation = -Math.PI * 0.5 //-90 grados
+                    break
+                case "up":
+                    rotation = Math.PI * 0.5//90 grados
+                    break
+                default:
+                    break;
+            }
+            ctx.save();
+        //para rotar el canvas se toma como referencia el centro del playerr
+        //cambiamos el origen (coordenadas 0 , 0) al centro de lo k vamos a rotar
+            ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+            if(rotation == Math.PI){
+        //se invierte el canvas verticalmente, pq
+        // sino el mono mira a a la derecha, 
+        //pero patas pa arriba xdxdxd    
+                ctx.scale(1, -1)
+            }
+            ctx.rotate(rotation);
+        //No le entendía bn al principio, pero aquí, ya que cambiamos el origen
+        //(mitad del player)
+        //despejamos la ecuación para encontar la nueva coordenada x & y
+        //ya que 0 es la mitad del player,restamos los valores de la mitad para encontrar su posicion original
+            ctx.drawImage(this.image, -this.width / 2, -this.height/2, this.width, this.height)
+        //se deshace todos los cambios del context Bv    
+            ctx.restore()
             this.drawHealthBar();
         } else {
             this.x = -100
@@ -301,7 +335,7 @@ class player extends sprite{
     
 }
 }
-const boo = document.getElementById("boo")
+let boo = document.getElementById("boo")
 const enemy = new player({image: boo, x: 400, y: 400, width: 50, height: 50, speed: 10})
 enemy.draw()
 // Nmms se ve bien cagado XDDDDD
@@ -309,4 +343,3 @@ const game = new gameArea({image: boo, x: 0, y: 0, width: 50, height: 50, speed:
 game.player.draw()
 game.addEntity(enemy);
 game.update()
-
