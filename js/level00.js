@@ -104,7 +104,8 @@ class player extends sprite{
     constructor({
             x, y, width, height, image, direction = "right",
             speed = 10, health = 100, damage = 10, 
-            atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCooldown = 1000, atkColor = "yellow"
+            atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCooldown = 1000, atkColor = "yellow",
+            colorLife = "green", colorLifeB = "red", healthBarHeight = 5
         }) {
         super({x, y, width, height, speed});
         this.image = image
@@ -118,8 +119,9 @@ class player extends sprite{
         this.atkSpeed = atkSpeed
         this.atkCooldown = atkCooldown
         this.atkColor = atkColor
-        this.colorLife = "green"
-        this.colorLifeB = "red"
+        this.colorLife = colorLife
+        this.colorLifeB = colorLifeB
+        this.healthBarHeight = healthBarHeight
     };
     
     clear() {
@@ -138,30 +140,36 @@ class player extends sprite{
     }
 
     draw(){
-        ctx.fillStyle = this.color
-        ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
-        this.drawHealthBar();
+        if (this.lives) {
+            ctx.fillStyle = this.color
+            ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
+            this.drawHealthBar();
+        } else {
+            this.x = -100
+            this.y = this.x
+        }
     }
     
     drawHealthBar(){
         const healthBarWidth = this.width;
-        const healthBarX = this.x;
+        let healthBarX = this.x;
         
         let healthBarY;
         if (this.y > canvas.height * 0.1) { 
-            healthBarY = this.y - this.height - 2;  // Barra arriba del jugador :v
+            healthBarY = this.y - this.healthBarHeight - 2;  // Barra arriba del jugador :v
         } else {
             healthBarY = this.y + this.height + 2;  // Barra abajo del jugador :v
         }
         
         ctx.fillStyle = this.colorLifeB;
-        ctx.fillRect(healthBarX, healthBarY, healthBarWidth, this.height);
+        ctx.fillRect(healthBarX, healthBarY, healthBarWidth, this.healthBarHeight);
         
         ctx.fillStyle = this.colorLife;
-        ctx.fillRect(healthBarX, healthBarY, healthBarWidth * (this.health / 100), this.height);
+        ctx.fillRect(healthBarX, healthBarY, healthBarWidth * (this.health / 100), this.healthBarHeight);
     }
 
     moveX(x) { 
+        if (!this.lives) return;
         if(this.direction != "left" && this.direction != "right"){
             return
         }
@@ -178,6 +186,7 @@ class player extends sprite{
     }
 
     moveY(y) {
+        if (!this.lives) return;
         if(this.direction != "up" && this.direction != "down"){
             return
         }
@@ -199,9 +208,10 @@ class player extends sprite{
 
     minusHealth(n){
         this.health -= n
-        if(this.health <= 0){
-            this.lives = false
-            this.clear()
+        if (this.health <= 0) {
+            this.lives = false;
+            this.speed = 0;
+            this.shooting = false;
         } else {
             console.log(this.health)
             this.draw()
