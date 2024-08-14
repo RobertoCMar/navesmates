@@ -14,7 +14,6 @@ body {
 }
 
 #game-title {
-    font-size: 3em;
     margin-bottom: 20px;
     color: rgb(255, 255, 255);
     text-shadow: 
@@ -23,6 +22,30 @@ body {
         -1px  1px 0 #000,
          1px  1px 0 #000; 
 
+}
+
+@media (max-width: 1200px) {
+    #game-title {
+        font-size: 2.5em;
+    }
+}
+
+@media (max-width: 992px) {
+    #game-title {
+        font-size: 2em;
+    }
+}
+
+@media (max-width: 768px) {
+    #game-title {
+        font-size: 1.5em;
+    }
+}
+
+@media (max-width: 576px) {
+    #game-title {
+        font-size: 1.2em;
+    }
 }
 
 #menu {

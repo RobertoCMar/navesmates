@@ -5,10 +5,6 @@ canvas.width = window.innerWidth
 canvas.height = window.innerHeight - window.innerHeight*0.1
 const ctx = canvas.getContext("2d");
 
-function goToMenu() {
-    window.location.href = "menu.html";
-}
-
 class gameArea{
    constructor({x = 0, y = 0, width, height, speed, image}){
         this.keyPressed = false,
@@ -127,21 +123,25 @@ class player extends sprite{
         this.colorLifeB = colorLifeB
         this.healthBarHeight = healthBarHeight
     };
-    
+
     clear() {
+        // eto limpia la zona del player
         ctx.clearRect(this.x - 1, this.y - 1, this.width + 2, this.height + 2);
         
+        // para saber donde esta la barra de salud
         const healthBarWidth = this.width;
         let healthBarY;
-
+    
         if (this.y > canvas.height * 0.1) { 
-            healthBarY = this.y - this.height - 2;
+            healthBarY = this.y - this.healthBarHeight - 2;
         } else {
             healthBarY = this.y + this.height + 2;
         }
-
-        ctx.clearRect(this.x - 1, healthBarY - 1, healthBarWidth + 2, this.height + 2);
+    
+        // Limpiar donde se dibuja la barra de salud
+        ctx.clearRect(this.x - 1, healthBarY - 1, healthBarWidth + 2, this.healthBarHeight + 2);
     }
+    
 
     draw(){
         if (this.lives) {
@@ -182,9 +182,10 @@ class player extends sprite{
         //se deshace todos los cambios del context Bv    
             ctx.restore()
             this.drawHealthBar();
-        } else {
-            this.x = -100
-            this.y = this.x
+        }
+        else
+        {
+            //Morir funcion XD
         }
     }
     
