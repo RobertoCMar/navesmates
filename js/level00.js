@@ -72,6 +72,8 @@ class sprite{
         this.y = y,
         this.width = width,
         this.height = height,
+        this.midX = this.x + this.width,
+        this.midY = this.y + this.height,
         this.speed = speed,
         this.color = color
     }
@@ -111,6 +113,7 @@ class player extends sprite{
             colorLife = "green", colorLifeB = "red", healthBarHeight = 5
         }) {
         super({x, y, width, height, speed});
+   
         this.image = image
         this.shooting = false
         this.direction = direction;
@@ -324,10 +327,18 @@ class player extends sprite{
         while (shoot.x < canvas.width-60 && shoot.y < canvas.height - 60 && shoot.y > 0 && shoot.x > 0) {
             for(let npc of game.entities){
                 if(shoot.isInContact(npc.x, npc.y, npc.width, npc.height)){
+                    let radius = npc.width * 1.2
+                    let diameter = radius * 2
+                    let startAreaX = npc.x - radius
+                    let startAreaY = npc.y - radius
+                    let txtX, txtY
+                   do{ 
+                    txtX = diameter * Math.random()
+                    txtY = diameter * Math.random()
+                   } while(!(startAreaX + txtX < npc.x - 10 || startAreaX + txtX > npc.x + npc.width + 10) && !(startAreaY + txtY < npc.Y - 10 || startAreaY + txtY > npc.Y + npc.height + 10))
                     shoot.clear()
-                    ctx.save()
                     ctx.fillStyle = "red"
-                    ctx.fillText(`${this.damage}`, shoot.x + 55, shoot.y - 35)
+                    ctx.fillText(`${this.damage}`, startAreaX + txtX, startAreaY + txtY)
                     enemy.minusHealth(this.damage)
                     await new Promise(resolve => setTimeout(resolve, 500))
                     ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -356,7 +367,7 @@ class player extends sprite{
     
 }
 }
-let boo = document.getElementById("boo")
+const boo = document.getElementById("boo")
 const enemy = new player({image: boo, x: 400, y: 400, width: 50, height: 50, speed: 10})
 enemy.draw()
 // Nmms se ve bien cagado XDDDDD
