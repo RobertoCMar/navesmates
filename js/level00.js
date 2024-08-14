@@ -10,7 +10,7 @@ class gameArea{
         this.keyPressed = false,
         this.key = null,
         this.player = new player({x, y, width, height, speed, image}),
-        this.entities = [this.player],
+        this.entities = [],
         this.control()
    }
 
@@ -52,12 +52,15 @@ class gameArea{
     }
 
     update(){
+        this.player.clear()
         this.entities.forEach(entity => {
             entity.clear();
         });
         this.motion()
+        this.player.draw()
+        this.entities = this.entities.filter( (monito) => monito.lives)
         this.entities.forEach(entity => {
-            entity.draw();
+                entity.draw();
         });
         requestAnimationFrame( () => this.update() )
     }
@@ -214,11 +217,13 @@ class player extends sprite{
         }
         if (this.x + this.speed * x >= 0 && this.x + this.speed * x + this.width <= canvas.width) {
                 this.x += this.speed * x;
-                if(this.isInContact(enemy.x, enemy.y, enemy.width, enemy.height)){
-                    if(this.direction == "right")
-                        this.x = enemy.x - enemy.width - 2
-                    else if(this.direction == "left")
-                        this.x = enemy.x + enemy.width + 2
+                for(let npc of game.entities){
+                    if(this.isInContact(npc.x, npc.y, npc.width, npc.height)){
+                        if(this.direction == "right")
+                            this.x = npc.x - npc.width - 2
+                        else if(this.direction == "left")
+                            this.x = npc.x + npc.width + 2
+                    }
                 }
         }
         coordenadas.innerText = `X: ${this.x}, Y: ${this.y}, Direction: ${this.direction}`
@@ -230,13 +235,17 @@ class player extends sprite{
             return
         }
         if (this.y + this.speed * y >= 0 && this.y + this.speed * y + this.height <= canvas.height) {
-                this.y += this.speed * y;
-            if(this.isInContact(enemy.x, enemy.y, enemy.width, enemy.height)){
-                if(this.direction == "down")
-                    this.y = enemy.y - enemy.height - 2;
-                else if(this.direction == "up")
-                    this.y = enemy.y + enemy.height + 2;
-            }  
+            this.y += this.speed * y;
+            for(let npc of game.entities){
+                if(this.isInContact(npc.x, npc.y, npc.width, npc.height)){
+                    if(this.direction == "down"){
+                        this.y = npc.y - npc.height - 2;
+                    }else if(this.direction == "up"){
+                        this.y = npc.y + npc.height + 2;
+                    }
+                    break;
+                }  
+            }
         }
         coordenadas.innerText = `X: ${this.x}, Y: ${this.y}, Direction: ${this.direction}`
     }
@@ -273,7 +282,7 @@ class player extends sprite{
             case "up":
                 shoot = new sprite({
                     x: x+Math.floor(this.atkHeight*0.5), 
-                    y: y-this.atkWidth, 
+                    y: y, 
                     width: this.atkHeight, 
                     height: this.atkWidth, 
                     speed: this.atkSpeed, 
@@ -283,7 +292,7 @@ class player extends sprite{
             case "down":
                 shoot = new sprite({
                     x: x+Math.floor(this.atkHeight*0.5), 
-                    y: y+this.atkWidth, 
+                    y: y, 
                     width: this.atkHeight, 
                     height: this.atkWidth, 
                     speed: this.atkSpeed, 
@@ -292,7 +301,7 @@ class player extends sprite{
             break;
             case "left":
                 shoot = new sprite({
-                    x: x-this.atkWidth, 
+                    x: x, 
                     y: y+Math.floor(this.atkHeight*0.5), 
                     width: this.atkWidth, 
                     height: this.atkHeight, 
@@ -302,7 +311,7 @@ class player extends sprite{
             break;
             case "right":
                 shoot = new sprite({
-                   x: x+this.atkWidth, 
+                   x: x, 
                    y: y+Math.floor(this.atkHeight*0.5), 
                    width: this.atkWidth, 
                    height: this.atkHeight, 
@@ -313,10 +322,17 @@ class player extends sprite{
         }
         shoot.draw();
         while (shoot.x < canvas.width-60 && shoot.y < canvas.height - 60 && shoot.y > 0 && shoot.x > 0) {
-            if(shoot.isInContact(enemy.x, enemy.y, enemy.width, enemy.height)){
-                shoot.clear()
-                enemy.minusHealth(this.damage)
-                return
+            for(let npc of game.entities){
+                if(shoot.isInContact(npc.x, npc.y, npc.width, npc.height)){
+                    shoot.clear()
+                    ctx.save()
+                    ctx.fillStyle = "red"
+                    ctx.fillText(`${this.damage}`, shoot.x + 55, shoot.y - 35)
+                    enemy.minusHealth(this.damage)
+                    await new Promise(resolve => setTimeout(resolve, 500))
+                    ctx.clearRect(0, 0, canvas.width, canvas.height)
+                    return
+                }
             }
             shoot.clear()
             switch (direction){
