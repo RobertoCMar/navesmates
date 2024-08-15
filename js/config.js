@@ -42,15 +42,35 @@ function drawTrees() {
 }
 
 class gameArea{
-   constructor({x = Math.floor(canvas.width * 0.5), y = Math.floor(canvas.height * 0.5), width, height, speed, image}){
+   constructor({x = Math.floor(canvas.width * 0.5), y = Math.floor(canvas.height * 0.5), width, height, image, 
+        direction = "right", speed = 10, health = 100, damage = 10, crtDamage = damage*1.5, 
+        atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCooldown = 1000, atkColor = "yellow",
+        colorLife = "green", colorLifeB = "red", healthBarHeight = 5
+   }){
         this.keyPressed = false,
         this.key = null,
-        this.player = new player({x, y, width, height, speed, image}),
+        this.player = new player({
+            x, y, width, height, speed, image, direction, 
+            speed, health, damage, crtDamage, 
+            atkWidth, atkHeight, atkSpeed, atkCooldown, atkColor,
+            colorLife, colorLifeB, healthBarHeight   
+        }),
         this.entities = [],
         this.control()
    }
 
-    addEntity(entity) {
+    addEntity(
+        {x, y, width, height, image, direction,
+        speed = 10, health = 100, damage = 10, crtDamage = damage*1.5, 
+        atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCooldown = 1000, atkColor = "yellow",
+        colorLife = "green", colorLifeB = "red", healthBarHeight = 5}
+    ) {
+        const entity = new player({
+            x, y, width, height, image, direction, 
+            speed, health, damage, crtDamage, 
+            atkWidth, atkHeight, atkSpeed, atkCooldown, atkColor,
+            colorLife, colorLifeB,  healthBarHeight   
+        });
         this.entities.push(entity);
     }
 
@@ -100,7 +120,7 @@ class gameArea{
         });
         requestAnimationFrame( () => this.update() )
     }
-}
+};
 
 class sprite{
     constructor({x, y, width, height, speed = 0, color}){
@@ -144,10 +164,10 @@ class sprite{
 
 class player extends sprite{
     constructor({
-            x, y, width, height, image, direction = "right",
-            speed = 10, health = 100, damage = 10, crtDamage = damage*1.5, 
-            atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCooldown = 1000, atkColor = "yellow",
-            colorLife = "green", colorLifeB = "red", healthBarHeight = 5
+            x, y, width, height, image, direction ,
+            speed, health, damage, crtDamage, 
+            atkWidth, atkHeight, atkSpeed, atkCooldown, atkColor,
+            colorLife, colorLifeB, healthBarHeight
         }) {
         super({x, y, width, height, speed});
    
@@ -155,6 +175,7 @@ class player extends sprite{
         this.shooting = false
         this.direction = direction;
         this.health = health;
+        this.maxHealth = health;
         this.lives = true
         this.damage = damage
         this.crtDamage = crtDamage;
@@ -248,7 +269,7 @@ class player extends sprite{
         ctx.fillRect(healthBarX, healthBarY, healthBarWidth, this.healthBarHeight);
         
         ctx.fillStyle = this.colorLife;
-        ctx.fillRect(healthBarX, healthBarY, healthBarWidth * (this.health / 100), this.healthBarHeight);
+        ctx.fillRect(healthBarX, healthBarY, healthBarWidth * (this.health / this.maxHealth), this.healthBarHeight);
     }
 
     moveX(x) { 
@@ -388,11 +409,11 @@ class player extends sprite{
                     ctx.fillStyle = "red"
                     if(!critical){
                         ctx.fillText(`${this.damage}`, txtX, txtY)
-                        enemy.minusHealth(this.damage)
+                        npc.minusHealth(this.damage)
                     } else {
                         ctx.fillText("Critical!", txtX, txtY + 10)
                         ctx.fillText(`${this.crtDamage}`, txtX, txtY)
-                        enemy.minusHealth(this.crtDamage)
+                        npc.minusHealth(this.crtDamage)
                     }
                     await new Promise(resolve => setTimeout(resolve, 500))
                     ctx.clearRect(0, 0, canvas.width, canvas.height)
