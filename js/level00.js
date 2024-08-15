@@ -1,5 +1,20 @@
 const boo = document.getElementById("boo")
-const game = new gameArea({
+
+class level0 extends gameArea{
+    level(){
+        for(let npc of this.entities){
+            if(npc == this.player){
+                continue;
+            }
+
+            if(!npc.shooting){
+                npc.doBasicAtk();
+            }
+        }
+    }
+}
+
+const game = new level0({
     image: boo, 
     width: 100, 
     height: 75, 
@@ -8,10 +23,12 @@ const game = new gameArea({
 });
 game.addEntity({
     x: 200, 
-    y: 500,
+    y: 400,
+    direction: "up",
     image: boo,
     height: 100,
     width: 80,
     health: 300
 })
+
 game.update()

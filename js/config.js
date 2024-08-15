@@ -55,7 +55,7 @@ class gameArea{
             atkWidth, atkHeight, atkSpeed, atkCooldown, atkColor,
             colorLife, colorLifeB, healthBarHeight   
         }),
-        this.entities = [],
+        this.entities = [this.player],
         this.control()
    }
 
@@ -101,19 +101,19 @@ class gameArea{
             this.player.moveX(-1);
             this.player.direction = "left";
         } else if(this.key == "Space" && !this.player.shooting){
-            this.player.fireCooldown()
-            this.player.fire(this.player.x, this.player.y)
+            this.player.doBasicAtk()
         }
-    }
+    } 
     }
 
+    level(){return}
+
     update(){
-        this.player.clear()
         this.entities.forEach(entity => {
             entity.clear();
         });
         this.motion()
-        this.player.draw()
+        this.level();
         this.entities = this.entities.filter( (monito) => monito.lives)
         this.entities.forEach(entity => {
                 entity.draw();
@@ -280,13 +280,18 @@ class player extends sprite{
         if (this.x + this.speed * x >= 0 && this.x + this.speed * x + this.width <= canvas.width) {
                 this.x += this.speed * x;
                 for(let npc of game.entities){
-                    if(this.isInContact(npc.x, npc.y, npc.width, npc.height)){
-                        if(this.direction == "right")
-                            this.x = npc.x - npc.width - 2
-                        else if(this.direction == "left")
-                            this.x = npc.x + npc.width + 2
+                    if(npc == this){
+                        continue;
                     }
-                    break;
+                    if(this.isInContact(npc.x, npc.y, npc.width, npc.height)){
+                        if(this.direction == "right"){
+                            this.x = npc.x - npc.width - 2
+                        }
+                        else if(this.direction == "left"){
+                            this.x = npc.x + npc.width + 2
+                        }
+                        break;
+                    }
                 }
                 this.midX = Math.floor(this.x + this.width * 0.5)
         }
@@ -301,6 +306,9 @@ class player extends sprite{
         if (this.y + this.speed * y >= 0 && this.y + this.speed * y + this.height <= canvas.height) {
             this.y += this.speed * y;
             for(let npc of game.entities){
+                if(npc == this){
+                    continue;
+                }
                 if(this.isInContact(npc.x, npc.y, npc.width, npc.height)){
                     if(this.direction == "down"){
                         this.y = npc.y - npc.height - 2;
@@ -323,23 +331,19 @@ class player extends sprite{
         this.health -= n
         if (this.health <= 0) {
             this.lives = false;
-            this.speed = 0;
-            this.shooting = false;
-        } else {
-            console.log(this.health)
-            this.draw()
-        }
+        } 
     }
-//Para los disparos primero se llama al metodo fireCooldown que se encarga de los booleanos, y luego al metodo fire...
+//Para los disparos primero se lladoBabasicAtk que se encarga de los booleanos, y luego al metodo basicAtk...
 //Este proceso se debe hacer dentro de un condicional que verifique si player está disparando
 //Así se soluciona el spam :vV:v:v xdXdxdxd
-    async fireCooldown() {
+    async doBasicAtk() {
         this.shooting = true;
+        this.basicAtk(this.x, this.y);
         await new Promise(resolve => setTimeout(resolve, this.atkCooldown))
         this.shooting = false;
     }
 
-   async fire(x, y){
+   async basicAtk(x, y){
  //ayuda jefesita :,,v       const shoot = new sprite(x+50, y+12, 50, 25, 20, "yellow")
         let shoot;
         const direction = this.direction
@@ -390,6 +394,9 @@ class player extends sprite{
             for(let npc of game.entities){
                 if(shoot.isInContact(npc.x, npc.y, npc.width, npc.height)){
                     //se forma un circulo con radio
+                    if(this == npc){
+                        continue;
+                    }
                     let whatDamage = Math.random() * 4
                     let critical = false
                     if(whatDamage < 1){
