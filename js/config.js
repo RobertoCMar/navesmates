@@ -6,7 +6,7 @@ canvas.height = window.innerHeight - window.innerHeight*0.1
 const ctx = canvas.getContext("2d");
 
 class gameArea{
-   constructor({x = 0, y = 0, width, height, speed, image}){
+   constructor({x = Math.floor(canvas.width * 0.5), y = Math.floor(canvas.height * 0.5), width, height, speed, image}){
         this.keyPressed = false,
         this.key = null,
         this.player = new player({x, y, width, height, speed, image}),
@@ -72,18 +72,19 @@ class sprite{
         this.y = y,
         this.width = width,
         this.height = height,
-        this.midX = this.x + this.width * 0.5,
-        this.midY = this.y + this.height * 0.5,
+        this.midX = Math.floor(this.x + this.width * 0.5),
+        this.midY = Math.floor(this.y + this.height * 0.5),
         this.speed = speed,
         this.color = color
     }
     moveX(x) {
             this.x += this.speed * x;
+            this.midX = Math.floor(this.x + this.width * 0.5)
     }
 
     moveY(y) {
             this.y += this.speed * y;
-        
+            this.midY = Math.floor(this.y + this.height * 0.5)
     }
 
     clear(){
@@ -228,7 +229,9 @@ class player extends sprite{
                         else if(this.direction == "left")
                             this.x = npc.x + npc.width + 2
                     }
+                    break;
                 }
+                this.midX = Math.floor(this.x + this.width * 0.5)
         }
         coordenadas.innerText = `X: ${this.x}, Y: ${this.y}, Direction: ${this.direction}`
     }
@@ -250,6 +253,7 @@ class player extends sprite{
                     break;
                 }  
             }
+            this.midY = Math.floor(this.y + this.height * 0.5)  
         }
         coordenadas.innerText = `X: ${this.x}, Y: ${this.y}, Direction: ${this.direction}`
     }
@@ -285,17 +289,17 @@ class player extends sprite{
         switch (direction){
             case "up":
                 shoot = new sprite({
-                    x: x+Math.floor(this.atkHeight*0.5), 
+                    x: this.midX, 
                     y: y, 
                     width: this.atkHeight, 
                     height: this.atkWidth, 
                     speed: this.atkSpeed, 
                     color: this.atkColor
-                });
+                }); 
             break;
             case "down":
                 shoot = new sprite({
-                    x: x+Math.floor(this.atkHeight*0.5), 
+                    x: this.midX, 
                     y: y, 
                     width: this.atkHeight, 
                     height: this.atkWidth, 
@@ -306,7 +310,7 @@ class player extends sprite{
             case "left":
                 shoot = new sprite({
                     x: x, 
-                    y: y+Math.floor(this.atkHeight*0.5), 
+                    y: this.midY, 
                     width: this.atkWidth, 
                     height: this.atkHeight, 
                     speed: this.atkSpeed, 
@@ -316,7 +320,7 @@ class player extends sprite{
             case "right":
                 shoot = new sprite({
                    x: x, 
-                   y: y+Math.floor(this.atkHeight*0.5), 
+                   y: this.midY, 
                    width: this.atkWidth, 
                    height: this.atkHeight, 
                    speed: this.atkSpeed, 
