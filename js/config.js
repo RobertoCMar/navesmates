@@ -6,7 +6,7 @@ canvas.height = window.innerHeight - window.innerHeight*0.1
 const ctx = canvas.getContext("2d");
 
 class gameArea{
-   constructor({x = 0, y = 0, width, height, speed, image}){
+   constructor({x = Math.floor(canvas.width * 0.5), y = Math.floor(canvas.height * 0.5), width, height, speed, image}){
         this.keyPressed = false,
         this.key = null,
         this.player = new player({x, y, width, height, speed, image}),
@@ -72,18 +72,19 @@ class sprite{
         this.y = y,
         this.width = width,
         this.height = height,
-        this.midX = this.x + this.width * 0.5,
-        this.midY = this.y + this.height * 0.5,
+        this.midX = Math.floor(this.x + this.width * 0.5),
+        this.midY = Math.floor(this.y + this.height * 0.5),
         this.speed = speed,
         this.color = color
     }
     moveX(x) {
             this.x += this.speed * x;
+            this.midX = Math.floor(this.x + this.width * 0.5)
     }
 
     moveY(y) {
             this.y += this.speed * y;
-        
+            this.midY = Math.floor(this.y + this.height * 0.5)
     }
 
     clear(){
@@ -108,7 +109,7 @@ class sprite{
 class player extends sprite{
     constructor({
             x, y, width, height, image, direction = "right",
-            speed = 10, health = 100, damage = 10, 
+            speed = 10, health = 100, damage = 10, crtDamage = damage*1.5, 
             atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCooldown = 1000, atkColor = "yellow",
             colorLife = "green", colorLifeB = "red", healthBarHeight = 5
         }) {
@@ -120,6 +121,7 @@ class player extends sprite{
         this.health = health;
         this.lives = true
         this.damage = damage
+        this.crtDamage = crtDamage;
         this.atkWidth = atkWidth
         this.atkHeight = atkHeight
         this.atkSpeed = atkSpeed
@@ -227,7 +229,9 @@ class player extends sprite{
                         else if(this.direction == "left")
                             this.x = npc.x + npc.width + 2
                     }
+                    break;
                 }
+                this.midX = Math.floor(this.x + this.width * 0.5)
         }
         coordenadas.innerText = `X: ${this.x}, Y: ${this.y}, Direction: ${this.direction}`
     }
@@ -249,6 +253,7 @@ class player extends sprite{
                     break;
                 }  
             }
+            this.midY = Math.floor(this.y + this.height * 0.5)  
         }
         coordenadas.innerText = `X: ${this.x}, Y: ${this.y}, Direction: ${this.direction}`
     }
@@ -284,17 +289,17 @@ class player extends sprite{
         switch (direction){
             case "up":
                 shoot = new sprite({
-                    x: x+Math.floor(this.atkHeight*0.5), 
+                    x: this.midX, 
                     y: y, 
                     width: this.atkHeight, 
                     height: this.atkWidth, 
                     speed: this.atkSpeed, 
                     color: this.atkColor
-                });
+                }); 
             break;
             case "down":
                 shoot = new sprite({
-                    x: x+Math.floor(this.atkHeight*0.5), 
+                    x: this.midX, 
                     y: y, 
                     width: this.atkHeight, 
                     height: this.atkWidth, 
@@ -305,7 +310,7 @@ class player extends sprite{
             case "left":
                 shoot = new sprite({
                     x: x, 
-                    y: y+Math.floor(this.atkHeight*0.5), 
+                    y: this.midY, 
                     width: this.atkWidth, 
                     height: this.atkHeight, 
                     speed: this.atkSpeed, 
@@ -315,7 +320,7 @@ class player extends sprite{
             case "right":
                 shoot = new sprite({
                    x: x, 
-                   y: y+Math.floor(this.atkHeight*0.5), 
+                   y: this.midY, 
                    width: this.atkWidth, 
                    height: this.atkHeight, 
                    speed: this.atkSpeed, 
@@ -328,6 +333,12 @@ class player extends sprite{
             for(let npc of game.entities){
                 if(shoot.isInContact(npc.x, npc.y, npc.width, npc.height)){
                     //se forma un circulo con radio
+                    let whatDamage = Math.random() * 4
+                    let critical = false
+                    if(whatDamage < 1){
+                        critical = true
+                    }
+
                     let radius = npc.width * 1.2
                     let txtX, txtY, angle
                    
@@ -339,8 +350,14 @@ class player extends sprite{
                     
                     shoot.clear()
                     ctx.fillStyle = "red"
-                    ctx.fillText(`${this.damage}`, txtX, txtY)
-                    enemy.minusHealth(this.damage)
+                    if(!critical){
+                        ctx.fillText(`${this.damage}`, txtX, txtY)
+                        enemy.minusHealth(this.damage)
+                    } else {
+                        ctx.fillText("Critical!", txtX, txtY + 10)
+                        ctx.fillText(`${this.crtDamage}`, txtX, txtY)
+                        enemy.minusHealth(this.crtDamage)
+                    }
                     await new Promise(resolve => setTimeout(resolve, 500))
                     ctx.clearRect(0, 0, canvas.width, canvas.height)
                     return
