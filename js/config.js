@@ -108,7 +108,7 @@ class sprite{
 class player extends sprite{
     constructor({
             x, y, width, height, image, direction = "right",
-            speed = 10, health = 100, damage = 10, 
+            speed = 10, health = 100, damage = 10, crtDamage = damage*1.5, 
             atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCooldown = 1000, atkColor = "yellow",
             colorLife = "green", colorLifeB = "red", healthBarHeight = 5
         }) {
@@ -120,6 +120,7 @@ class player extends sprite{
         this.health = health;
         this.lives = true
         this.damage = damage
+        this.crtDamage = crtDamage;
         this.atkWidth = atkWidth
         this.atkHeight = atkHeight
         this.atkSpeed = atkSpeed
@@ -328,6 +329,12 @@ class player extends sprite{
             for(let npc of game.entities){
                 if(shoot.isInContact(npc.x, npc.y, npc.width, npc.height)){
                     //se forma un circulo con radio
+                    let whatDamage = Math.random() * 4
+                    let critical = false
+                    if(whatDamage < 1){
+                        critical = true
+                    }
+
                     let radius = npc.width * 1.2
                     let txtX, txtY, angle
                    
@@ -339,8 +346,14 @@ class player extends sprite{
                     
                     shoot.clear()
                     ctx.fillStyle = "red"
-                    ctx.fillText(`${this.damage}`, txtX, txtY)
-                    enemy.minusHealth(this.damage)
+                    if(!critical){
+                        ctx.fillText(`${this.damage}`, txtX, txtY)
+                        enemy.minusHealth(this.damage)
+                    } else {
+                        ctx.fillText("Critical!", txtX, txtY + 10)
+                        ctx.fillText(`${this.crtDamage}`, txtX, txtY)
+                        enemy.minusHealth(this.crtDamage)
+                    }
                     await new Promise(resolve => setTimeout(resolve, 500))
                     ctx.clearRect(0, 0, canvas.width, canvas.height)
                     return
