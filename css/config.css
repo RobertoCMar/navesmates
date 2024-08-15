@@ -4,6 +4,8 @@ body {
     overflow: hidden;
     padding: 0;
     margin: 0;
+    background-image: url('./../Assets/Grass2.png');
+    background-position: center;
 }
 
 #boo{
