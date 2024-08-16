@@ -5,15 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="./css/config.css">
+    <link rel="stylesheet" href="./css/death-screen.css">
 </head>
 <body>
-    <button onclick="gotoWindow(2)">Menu</button>
     <div id="canvas-container">
         <canvas id="tablero"> </canvas>
     </div>
+   
+    <div hidden id="death-screen">
+        <button onclick="window.location.href='./menu.html'"> menu </button>
+        <h1> MUERTO! </h1>
+    </div>
+    
     <script src="./js/config.js"></script>
-    <script src="./js/trees.js"></script>
     <script src="./../js/level00.js"></script>
-    <script src="./js/menu.js"></script>
 </body>
 </html>

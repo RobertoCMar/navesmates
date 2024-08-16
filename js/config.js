@@ -119,10 +119,8 @@ class gameArea{
         } else{
             window.cancelAnimationFrame;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "white";
-            ctx.textAlign = "center";
-            ctx.font = "40px Sans-serif";
-            ctx.fillText("MUERTO!", canvas.width * 0.5, canvas.height * 0.5);
+            canvas.remove();
+            document.getElementById("death-screen").style.display = "flex";
         }
     }
 };

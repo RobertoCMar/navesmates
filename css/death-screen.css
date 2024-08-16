@@ -1,0 +1,29 @@
+#death-screen {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column-reverse;
+    background: #779186;
+    font-size: 30px;
+    height: 100%;
+    width: 100%;
+}
+
+#death-screen > button{
+    background: #ac3b3b;
+    color: #a7da02;
+    font-size: 20px;
+    width: 200px;
+    height: 50px;
+    box-shadow: #597063 0 0 4px 2px;
+}
+
+#death-screen > button:hover{
+    cursor: pointer;
+    background: #5e8072;
+    color: #c8d5dd;
+    box-shadow: #eb5b5b 0 4px 2px 0;
+}
+
+#death-screen > h1 {
+    color: rgb(78, 38, 38);
+}

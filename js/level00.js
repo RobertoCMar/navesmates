@@ -1,4 +1,6 @@
 const player = new Image();
+const basicEnemy = new Image();
+basicEnemy.src = "./../Assets/fondo.jpg";
 player.src = "./../Assets/King-Boo.png";
 
 class level0 extends gameArea{
@@ -26,7 +28,7 @@ game.addEntity({
     x: 200, 
     y: 400,
     direction: "up",
-    image: player,
+    image: basicEnemy,
     height: 100,
     width: 80,
     health: 300
