@@ -4,7 +4,7 @@ const coordenadas = document.getElementById("coordenadas");
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight - window.innerHeight*0.1
 const ctx = canvas.getContext("2d");
-
+ctx.font = "15px Verdana";
 const treeImg = new Image();
 treeImg.src = "./../Assets/tree.png";
 
@@ -109,16 +109,25 @@ class gameArea{
     level(){return}
 
     update(){
-        this.entities.forEach(entity => {
-            entity.clear();
-        });
-        this.motion()
-        this.level();
-        this.entities = this.entities.filter( (monito) => monito.lives)
-        this.entities.forEach(entity => {
-                entity.draw();
-        });
-        requestAnimationFrame( () => this.update() )
+        if(this.player.lives){
+            this.entities.forEach(entity => {
+                entity.clear();
+            });
+            this.motion()
+            this.level();
+            this.entities = this.entities.filter( (monito) => monito.lives)
+            this.entities.forEach(entity => {
+                    entity.draw();
+            });
+            requestAnimationFrame( () => this.update() )
+        } else{
+            window.cancelAnimationFrame;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.font = "40px Sans-serif";
+            ctx.fillText("MUERTO!", canvas.width * 0.5, canvas.height * 0.5);
+        }
     }
 };
 
