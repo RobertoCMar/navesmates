@@ -45,7 +45,7 @@ game.addEntity({
 })
 game.addEntity({
     x: 800, 
-    y: 300,
+    y: 100,
     direction: "left",
     image: basicEnemy,
     height: 100,
