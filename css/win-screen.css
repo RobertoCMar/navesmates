@@ -1,4 +1,4 @@
-#death-screen {
+#win-screen {
     align-items: center;
     justify-content: center;
     flex-direction: column-reverse;
@@ -8,7 +8,7 @@
     width: 100%;
 }
 
-#death-screen > button{
+#win-screen > button{
     background: #ac3b3b;
     color: #a7da02;
     font-size: 20px;
@@ -18,13 +18,13 @@
     margin: 10px;
 }
 
-#death-screen > button:hover{
+#win-screen > button:hover{
     cursor: pointer;
     background: #5e8072;
     color: #c8d5dd;
     box-shadow: #eb5b5b 0 4px 2px 0;
 }
 
-#death-screen > h1 {
+#win-screen > h1 {
     color: rgb(78, 38, 38);
 }

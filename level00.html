@@ -6,6 +6,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="./css/config.css">
     <link rel="stylesheet" href="./css/death-screen.css">
+    <link rel="stylesheet" href="./css/win-screen.css">
 </head>
 <body>
     <div id="canvas-container">
@@ -14,8 +15,13 @@
    
     <div hidden id="death-screen">
         <button onclick="window.location.href='./menu.html'"> menu </button>
-        <button onclick="location.reload()"> respawn </button>
-        <h1> MUERTO! </h1>
+        <button onclick="location.reload()"> retry </button>
+        <h1> GAME OVER! </h1>
+    </div>
+    <div hidden id="win-screen">
+        <button onclick="window.location.href='./menu.html'"> menu </button>
+        <button onclick="window.location.href='./level01.html'"> next </button>
+        <h1> YOU WIN! </h1>
     </div>
     
     <script src="./js/config.js"></script>

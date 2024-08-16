@@ -112,6 +112,13 @@ class gameArea{
             this.motion()
             this.level();
             this.entities = this.entities.filter( (monito) => monito.lives)
+            if (this.entities.length === 1) {
+                window.cancelAnimationFrame(this.update);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                canvas.remove();
+                document.getElementById("win-screen").style.display = "flex";
+                return;
+            }
             this.entities.forEach(entity => {
                     entity.draw();
             });
