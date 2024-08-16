@@ -1,8 +1,7 @@
 
 const canvas = document.getElementById("tablero");
-const coordenadas = document.getElementById("coordenadas");
 canvas.width = window.innerWidth
-canvas.height = window.innerHeight - window.innerHeight*0.1
+canvas.height = window.innerHeight
 const ctx = canvas.getContext("2d");
 ctx.font = "15px Verdana";
 
@@ -14,7 +13,7 @@ class gameArea{
    }){
         this.keyPressed = false,
         this.key = null,
-        this.player = new player({
+        this.player = new character({
             x, y, width, height, speed, image, direction, 
             speed, health, damage, crtDamage, 
             atkWidth, atkHeight, atkSpeed, atkCooldown, atkColor,
@@ -30,7 +29,7 @@ class gameArea{
         atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCooldown = 1000, atkColor = "yellow",
         colorLife = "green", colorLifeB = "red", healthBarHeight = 5}
     ) {
-        const entity = new player({
+        const entity = new character({
             x, y, width, height, image, direction, 
             speed, health, damage, crtDamage, 
             atkWidth, atkHeight, atkSpeed, atkCooldown, atkColor,
@@ -136,7 +135,7 @@ class sprite{
     }
 }
 
-class player extends sprite{
+class character extends sprite{
     constructor({
             x, y, width, height, image, direction ,
             speed, health, damage, crtDamage, 
@@ -269,7 +268,6 @@ class player extends sprite{
                 }
                 this.midX = Math.floor(this.x + this.width * 0.5)
         }
-        coordenadas.innerText = `X: ${this.x}, Y: ${this.y}, Direction: ${this.direction}`
     }
 
     moveY(y) {
@@ -294,7 +292,6 @@ class player extends sprite{
             }
             this.midY = Math.floor(this.y + this.height * 0.5)  
         }
-        coordenadas.innerText = `X: ${this.x}, Y: ${this.y}, Direction: ${this.direction}`
     }
 
     addHealth(n){
@@ -379,7 +376,7 @@ class player extends sprite{
 
                     let radius = npc.width * 1.2
                     let txtX, txtY, angle
-                   
+                    let txtWidth, txtHeight;
                     angle = Math.random() * Math.PI * 2 //angulo de 0-360 grados
                    //en  base al angulo, se calculan las coordenas para el texto
                    //el texto aparece siempre en el perimetro del circulo
@@ -396,8 +393,13 @@ class player extends sprite{
                         ctx.fillText(`${this.crtDamage}`, txtX, txtY)
                         npc.minusHealth(this.crtDamage)
                     }
+                    txtWidth = (critical) ? ctx.measureText(`${this.crtDamage}`).width : ctx.measureText(`${this.damage}`).width;
+                    txtHeight = parseInt(ctx.font);
                     await new Promise(resolve => setTimeout(resolve, 500))
-                    ctx.clearRect(0, 0, canvas.width, canvas.height)
+                    ctx.clearRect(txtX, txtY - txtHeight, txtWidth, txtHeight);
+                    if(critical){
+                        ctx.clearRect(txtX, txtY + 10 - txtHeight, ctx.measureText("Critical!").width, txtHeight);
+                    }
                     return
                 }
             }

@@ -4,8 +4,6 @@ body {
     overflow: hidden;
     padding: 0;
     margin: 0;
-    background-image: url('./../Assets/Grass2.png');
-    background-position: center;
 }
 
 #boo{
@@ -15,9 +13,10 @@ body {
 }
 
 #canvas-container{
-
-    display: flex;
-    align-items: center;
+  background-image: url('./../Assets/Dirt.png');
+  background-position: center;
+  display: flex;
+  align-items: center;
 }
 
 #coordenadas{
