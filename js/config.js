@@ -41,7 +41,7 @@ class gameArea{
    constructor({x = Math.floor(canvas.width * 0.5), y = Math.floor(canvas.height * 0.5), width, height, image, 
         direction = "right", speed = 10, health = 100, damage = 10, crtDamage = damage*1.5, 
         atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCooldown = 1000, atkColor = "yellow",
-        colorLife = "green", colorLifeB = "red", healthBarHeight = 5
+        colorLife = "green", colorLifeB = "red", healthBarHeight = 5, images
    }){
         this.keyPressed = false,
         this.key = null,
@@ -49,7 +49,8 @@ class gameArea{
             x, y, width, height, speed, image, direction, 
             speed, health, damage, crtDamage, 
             atkWidth, atkHeight, atkSpeed, atkCooldown, atkColor,
-            colorLife, colorLifeB, healthBarHeight   
+            colorLife, colorLifeB, healthBarHeight, 
+            multiImg: true, images
         }),
         this.entities = [this.player],
         this.control()
@@ -177,7 +178,8 @@ class character extends sprite{
             x, y, width, height, image, direction ,
             speed, health, damage, crtDamage, 
             atkWidth, atkHeight, atkSpeed, atkCooldown, atkColor,
-            colorLife, colorLifeB, healthBarHeight
+            colorLife, colorLifeB, healthBarHeight, 
+            multiImg = false, images
         }) {
         super({x, y, width, height, speed});
    
@@ -197,6 +199,8 @@ class character extends sprite{
         this.colorLife = colorLife
         this.colorLifeB = colorLifeB
         this.healthBarHeight = healthBarHeight
+        this.multiImg = multiImg;
+        this.images = images;
     };
 
     clear() {
@@ -221,46 +225,63 @@ class character extends sprite{
     draw(){
         if (this.lives) {
             const direction = this.direction;
-            let rotation
-            switch (direction) {
-                case "right":
-                    rotation = Math.PI; //180 grados
-                    break;
-                case "left":
-                    rotation = 0;
-                    break;
-                case "down":
-                    rotation = -Math.PI * 0.5 //-90 grados
-                    break
-                case "up":
-                    rotation = Math.PI * 0.5//90 grados
-                    break
-                default:
-                    break;
+            if(!this.multiImg){
+                let rotation
+                switch (direction) {
+                    case "right":
+                        rotation = Math.PI; //180 grados
+                        break;
+                    case "left":
+                        rotation = 0;
+                        break;
+                    case "down":
+                        rotation = -Math.PI * 0.5 //-90 grados
+                        break
+                    case "up":
+                        rotation = Math.PI * 0.5//90 grados
+                        break
+                    default:
+                        break;
+                }
+                ctx.save();
+            //para rotar el canvas se toma como referencia el centro del playerr
+            //cambiamos el origen (coordenadas 0 , 0) al centro de lo k vamos a rotar
+                ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+                if(rotation == Math.PI){
+            //se invierte el canvas verticalmente, pq
+            // sino el mono mira a a la derecha, 
+            //pero patas pa arriba xdxdxd    
+                    ctx.scale(1, -1)
+                }
+                ctx.rotate(rotation);
+            //No le entendía bn al principio, pero aquí, ya que cambiamos el origen
+            //(mitad del player)
+            //despejamos la ecuación para encontar la nueva coordenada x & y
+            //ya que 0 es la mitad del player,restamos los valores de la mitad para encontrar su posicion original
+                ctx.drawImage(this.image, -this.width / 2, -this.height/2, this.width, this.height)
+            //se deshace todos los cambios del context Bv    
+                ctx.restore()
+                this.drawHealthBar();
+            } else {
+                switch (direction) {
+                    case "up":
+                        this.image = this.images.up;
+                        break;
+                    case "down":
+                        this.image = this.images.down;
+                        break;
+                    case "left":
+                        this.image = this.images.left;
+                        break;
+                    case "right":
+                        this.image = this.images.right;
+                        break;
+                    default:
+                        break;
+                }
+                    ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                    this.drawHealthBar();
             }
-            ctx.save();
-        //para rotar el canvas se toma como referencia el centro del playerr
-        //cambiamos el origen (coordenadas 0 , 0) al centro de lo k vamos a rotar
-            ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
-            if(rotation == Math.PI){
-        //se invierte el canvas verticalmente, pq
-        // sino el mono mira a a la derecha, 
-        //pero patas pa arriba xdxdxd    
-                ctx.scale(1, -1)
-            }
-            ctx.rotate(rotation);
-        //No le entendía bn al principio, pero aquí, ya que cambiamos el origen
-        //(mitad del player)
-        //despejamos la ecuación para encontar la nueva coordenada x & y
-        //ya que 0 es la mitad del player,restamos los valores de la mitad para encontrar su posicion original
-            ctx.drawImage(this.image, -this.width / 2, -this.height/2, this.width, this.height)
-        //se deshace todos los cambios del context Bv    
-            ctx.restore()
-            this.drawHealthBar();
-        }
-        else
-        {
-            //Morir funcion XD
         }
     }
     

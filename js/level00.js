@@ -1,8 +1,20 @@
-const player = new Image();
-const basicEnemy = new Image();
-basicEnemy.src = "./../Assets/fondo.jpg";
-player.src = "./../Assets/King-Boo.png";
+const player = {
+    up:
+        new Image(),
+    down:
+        new Image(),
+    left:
+        new Image(),
+    right:
+        new Image()    
+};
 
+const basicEnemy = new Image();
+player.up.src = "./../Assets/Man-back.png";
+player.down.src = "./../Assets/Man-front.png";
+player.right.src = "./../Assets/Man-right.png";
+player.left.src = "./../Assets/Man-left.png";
+basicEnemy.src = "./../Assets/King-Boo.png";
 class level0 extends gameArea{
     level(){
         for(let npc of this.entities){
@@ -18,16 +30,17 @@ class level0 extends gameArea{
 }
 
 const game = new level0({
-    image: player, 
+    image: player.down, 
     width: 100, 
     height: 75, 
     speed: 5, 
-    damage: 50
+    damage: 50,
+    images: player 
 });
 game.addEntity({
     x: 200, 
     y: 400,
-    direction: "up",
+    direction: "left",
     image: basicEnemy,
     height: 100,
     width: 80,
