@@ -23,7 +23,7 @@ class level0 extends gameArea{
             }
 
             if(!npc.shooting){
-                npc.doBasicAtk();
+                npc.doAtk(() => npc.basicAtk(), npc.atkCooldown);
             }
         }
     }

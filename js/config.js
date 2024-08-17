@@ -63,7 +63,7 @@ class gameArea{
    }){
         this.keyPressed = false,
         this.key = null,
-        this.player = new character({
+        this.player = new mainCharacter({
             x, y, width, height, speed, image, direction, 
             speed, health, damage, crtDamage, 
             atkWidth, atkHeight, atkSpeed, atkCooldown, atkColor,
@@ -116,11 +116,13 @@ class gameArea{
             this.player.moveX(-1);
             this.player.direction = "left";
         } else if(this.key == "Space" && !this.player.shooting){
+            this.player.doAtk(() => this.player.basicAtk(), this.player.atkCooldown)
+        } else if(this.key == "KeyX" && !this.player.shooting){
             let answer = parseInt(prompt("2 + 2"));
             if(answer != 4){
                 this.player.minusHealth(this.player.damage);
             }
-            this.player.doBasicAtk()
+            this.player.doAtk(() => this.player.specialAtk(), this.player.atkCooldown)
         }
     } 
     }
@@ -399,17 +401,21 @@ class character extends sprite{
 //Para los disparos primero se lladoBabasicAtk que se encarga de los booleanos, y luego al metodo basicAtk...
 //Este proceso se debe hacer dentro de un condicional que verifique si player está disparando
 //Así se soluciona el spam :vV:v:v xdXdxdxd
-    async doBasicAtk() {
+    async doAtk(atk, cooldown) {
         this.shooting = true;
-        this.basicAtk(this.x, this.y);
-        await new Promise(resolve => setTimeout(resolve, this.atkCooldown))
+        atk()
+        await new Promise(resolve => setTimeout(resolve, cooldown))
         this.shooting = false;
     }
 
-   async basicAtk(x, y){
+   async basicAtk(){
  //ayuda jefesita :,,v       const shoot = new sprite(x+50, y+12, 50, 25, 20, "yellow")
         let shoot;
+        const x = this.x;
+        const y = this.y;
         const direction = this.direction
+        const damage = this.damage;
+        const crtDamage = this.crtDamage;
         switch (direction){
             case "up":
                 shoot = new sprite({
@@ -481,14 +487,14 @@ class character extends sprite{
                     shoot.clear()
                     ctx.fillStyle = "red"
                     if(!critical){
-                        ctx.fillText(`${this.damage}`, txtX, txtY)
-                        npc.minusHealth(this.damage)
+                        ctx.fillText(`${damage}`, txtX, txtY)
+                        npc.minusHealth(damage)
                     } else {
                         ctx.fillText("Critical!", txtX, txtY + 10)
-                        ctx.fillText(`${this.crtDamage}`, txtX, txtY)
-                        npc.minusHealth(this.crtDamage)
+                        ctx.fillText(`${crtDamage}`, txtX, txtY)
+                        npc.minusHealth(crtDamage)
                     }
-                    txtWidth = (critical) ? ctx.measureText(`${this.crtDamage}`).width : ctx.measureText(`${this.damage}`).width;
+                    txtWidth = (critical) ? ctx.measureText(`${crtDamage}`).width : ctx.measureText(`${damage}`).width;
                     txtHeight = parseInt(ctx.font);
                     await new Promise(resolve => setTimeout(resolve, 500))
                     ctx.clearRect(txtX, txtY - txtHeight, txtWidth, txtHeight);
@@ -521,3 +527,17 @@ class character extends sprite{
 }
 }
 
+class mainCharacter extends character{
+    async specialAtk(){
+    let temp = this.atkColor;
+    let tempD = this.damage
+    let tempCD = this.crtDamage;
+    this.atkColor = "red";
+    this.damage *= 3;  
+    this.crtDamage = this.damage * 2;
+    this.basicAtk();
+    this.atkColor = temp;
+    this.damage = tempD; 
+    this.crtDamage = tempCD;
+}
+}
