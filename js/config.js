@@ -116,6 +116,10 @@ class gameArea{
             this.player.moveX(-1);
             this.player.direction = "left";
         } else if(this.key == "Space" && !this.player.shooting){
+            let answer = parseInt(prompt("2 + 2"));
+            if(answer != 4){
+                this.player.minusHealth(this.player.damage);
+            }
             this.player.doBasicAtk()
         }
     } 

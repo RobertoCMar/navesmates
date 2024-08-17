@@ -34,10 +34,12 @@ const basicEnemy = {
     height: 100,
     padding: 30,
     x: 50,
-    y: canvas.width * 0.5 - 80
+    y: Math.round(canvas.height * 0.5 + 80),
+    health: 130
 }
 
 const game = new level0({
+    y: Math.round(canvas.height * 0.5 - 20),
     image: player.down, 
     width: 60, 
     height: 100, 
@@ -55,7 +57,7 @@ for(let i = 0; basicEnemy.x + (basicEnemy.width + basicEnemy.padding) * i < canv
         image: basicEnemyImg,
         height: basicEnemy.height,
         width: basicEnemy.width,
-        health: 300,
+        health: basicEnemy.health,
     })
 }
 
