@@ -127,9 +127,10 @@ class gameArea{
         if(this.player.lives){
             this.entities.forEach(entity => {
                 entity.clear();
-            });
+            }); 
             this.motion()
             this.level();
+          
             this.entities = this.entities.filter( (monito) => monito.lives)
             if (this.entities.length === 1) {
                 window.cancelAnimationFrame(this.update);
@@ -214,8 +215,20 @@ class character extends sprite{
 
     clear() {
         // eto limpia la zona del player
-        ctx.clearRect(this.x - 1, this.y - 1, this.width + 2, this.height + 2);
-        
+        if(this.direction == "right" || this.direction == "left" || this.multiImg){
+            ctx.clearRect(this.x, this.y, this.width, this.height);
+        } else{
+            let rotation;
+            rotation = Math.PI * 0.5 
+            if(this.direction == "down"){
+                rotation *= -1;
+            }
+            ctx.save();
+            ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+            ctx.rotate(rotation);
+            ctx.clearRect(-this.width / 2, -this.height/2, this.width, this.height)
+            ctx.restore()
+        }
         // para saber donde esta la barra de salud
         const healthBarWidth = this.width;
         let healthBarY;

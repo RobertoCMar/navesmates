@@ -9,12 +9,12 @@ const player = {
         new Image()    
 };
 
-const basicEnemy = new Image();
+const basicEnemyImg = new Image();
 player.up.src = "./../Assets/Man-back.png";
 player.down.src = "./../Assets/Man-front.png";
 player.right.src = "./../Assets/Man-right.png";
 player.left.src = "./../Assets/Man-left.png";
-basicEnemy.src = "./../Assets/King-Boo.png";
+basicEnemyImg.src = "./../Assets/King-Boo.png";
 class level0 extends gameArea{
     level(){
         for(let npc of this.entities){
@@ -29,6 +29,14 @@ class level0 extends gameArea{
     }
 }
 
+const basicEnemy = {
+    width: 80,
+    height: 100,
+    padding: 30,
+    x: 50,
+    y: canvas.width * 0.5 - 80
+}
+
 const game = new level0({
     image: player.down, 
     width: 60, 
@@ -37,16 +45,19 @@ const game = new level0({
     damage: 50,
     images: player 
 });
-game.addEntity({
-    x: 200, 
-    y: 400,
-    direction: "left",
-    image: basicEnemy,
-    height: 100,
-    width: 80,
-    health: 300,
-    damage: 1
-})
+
+
+for(let i = 0; basicEnemy.x + (basicEnemy.width + basicEnemy.padding) * i < canvas.width - basicEnemy.width - basicEnemy.padding; i++){
+    game.addEntity({
+        x: basicEnemy.x + (basicEnemy.width + basicEnemy.padding) * i, 
+        y: basicEnemy.y,
+        direction: "up",
+        image: basicEnemyImg,
+        height: basicEnemy.height,
+        width: basicEnemy.width,
+        health: 300,
+    })
+}
 
 async function trees(){
     await new Promise(resolve => setTimeout(resolve, 500))
