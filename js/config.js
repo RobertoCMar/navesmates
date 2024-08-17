@@ -421,7 +421,7 @@ class character extends sprite{
         shoot.draw();
         while (shoot.x < canvas.width-60 && shoot.y < canvas.height - 60 && shoot.y > 0 && shoot.x > 0) {
             for(let npc of game.entities){
-                if (npc === this || npc !== game.player) {
+                if (this !== game.player && npc !== game.player) {
                     continue;
                 }
                 if(shoot.isInContact(npc.x, npc.y, npc.width, npc.height)){
