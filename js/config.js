@@ -8,6 +8,24 @@ ctx.font = "15px Verdana";
 const treeImg = new Image();
 treeImg.src = "./../Assets/Tree.png";
 
+function isInContact(aX, aY, aWidth, aHeight, bX, bY, bWidth, bHeight){
+    return (
+        aX + aWidth > bX && 
+        aX < bX + bWidth && 
+        aY + aHeight > bY && 
+        aY < bY + bHeight 
+    )
+}
+
+function centerX(x, width){
+    return Math.round(x - width * 0.5);
+}
+
+function centerY(y, height){
+    return Math.round (y - height * 0.5); 
+}
+
+
 function drawTrees() {
     const treeSize = 30; // Tamaño de cada árbol
     const treePositions = [];
@@ -146,12 +164,12 @@ class sprite{
     }
     moveX(x) {
             this.x += this.speed * x;
-            this.midX = Math.floor(this.x + this.width * 0.5)
+            this.midX = Math.round(this.x + this.width * 0.5)
     }
 
     moveY(y) {
             this.y += this.speed * y;
-            this.midY = Math.floor(this.y + this.height * 0.5)
+            this.midY = Math.round(this.y + this.height * 0.5)
     }
 
     clear(){
@@ -161,15 +179,6 @@ class sprite{
     draw(){
         ctx.fillStyle = this.color
         ctx.fillRect(this.x, this.y, this.width, this.height)
-    }
-
-    isInContact(objX, objY, objWidth, objHeight){
-        return (
-            this.x + this.width >= objX && 
-            this.x <= objX + objWidth && 
-            this.y + this.height >= objY && 
-            this.y <= objY + objHeight 
-        )
     }
 }
 
@@ -304,51 +313,59 @@ class character extends sprite{
     }
 
     moveX(x) { 
-        if (!this.lives) return;
-        if(this.direction != "left" && this.direction != "right"){
+        const direction = this.direction;
+        let contact = false;
+        if(direction != "left" && direction != "right"){
             return
         }
         if (this.x + this.speed * x >= 0 && this.x + this.speed * x + this.width <= canvas.width) {
-                this.x += this.speed * x;
                 for(let npc of game.entities){
                     if(npc == this){
                         continue;
                     }
-                    if(this.isInContact(npc.x, npc.y, npc.width, npc.height)){
-                        if(this.direction == "right"){
-                            this.x = npc.x - npc.width - 2
+                    if(isInContact(this.x + this.speed * x, this.y ,this.width, this.height, npc.x, npc.y, npc.width, npc.height)){
+                        contact = true;
+                        if(direction == "right"){
+                            this.x = npc.x - this.width - 2
                         }
-                        else if(this.direction == "left"){
+                        else if(direction == "left"){
                             this.x = npc.x + npc.width + 2
                         }
                         break;
-                    }
+                    } 
                 }
-                this.midX = Math.floor(this.x + this.width * 0.5)
+                if(!contact){
+                    this.x += this.speed * x;
+                }
+                this.midX = Math.round(this.x + this.width * 0.5)
         }
     }
 
     moveY(y) {
-        if (!this.lives) return;
-        if(this.direction != "up" && this.direction != "down"){
+        const direction = this.direction;
+        let contact = false;
+        if(direction != "up" && direction != "down"){
             return
         }
         if (this.y + this.speed * y >= 0 && this.y + this.speed * y + this.height <= canvas.height) {
-            this.y += this.speed * y;
             for(let npc of game.entities){
                 if(npc == this){
                     continue;
                 }
-                if(this.isInContact(npc.x, npc.y, npc.width, npc.height)){
-                    if(this.direction == "down"){
-                        this.y = npc.y - npc.height - 2;
-                    }else if(this.direction == "up"){
+                if(isInContact(this.x, this.y + this.speed * y, this.width, this.height, npc.x, npc.y, npc.width, npc.height)){
+                    contact = true;
+                    if(direction == "down"){
+                        this.y = npc.y - this.height - 2;
+                    }else if(direction == "up"){
                         this.y = npc.y + npc.height + 2;
                     }
                     break;
                 }  
             }
-            this.midY = Math.floor(this.y + this.height * 0.5)  
+            if(!contact){
+                this.y += this.speed * y; 
+            }
+            this.midY = Math.round(this.y + this.height * 0.5)  
         }
     }
 
@@ -379,17 +396,17 @@ class character extends sprite{
         switch (direction){
             case "up":
                 shoot = new sprite({
-                    x: this.midX, 
+                    x: centerX(this.midX, this.atkHeight), 
                     y: y, 
                     width: this.atkHeight, 
-                    height: this.atkWidth, 
+                    height: this.atkWidth,
                     speed: this.atkSpeed, 
                     color: this.atkColor
                 }); 
             break;
             case "down":
                 shoot = new sprite({
-                    x: this.midX, 
+                    x: centerX(this.midX, this.atkHeight), 
                     y: y, 
                     width: this.atkHeight, 
                     height: this.atkWidth, 
@@ -400,7 +417,7 @@ class character extends sprite{
             case "left":
                 shoot = new sprite({
                     x: x, 
-                    y: this.midY, 
+                    y: centerY(this.midY, this.atkHeight), 
                     width: this.atkWidth, 
                     height: this.atkHeight, 
                     speed: this.atkSpeed, 
@@ -410,7 +427,7 @@ class character extends sprite{
             case "right":
                 shoot = new sprite({
                    x: x, 
-                   y: this.midY, 
+                   y: centerY(this.midY, this.atkHeight), 
                    width: this.atkWidth, 
                    height: this.atkHeight, 
                    speed: this.atkSpeed, 
@@ -424,7 +441,7 @@ class character extends sprite{
                 if (this !== game.player && npc !== game.player) {
                     continue;
                 }
-                if(shoot.isInContact(npc.x, npc.y, npc.width, npc.height)){
+                if(isInContact(shoot.x, shoot.y, shoot.width, shoot.height, npc.x, npc.y, npc.width, npc.height)){
                     //se forma un circulo con radio
                     if(this == npc){
                         continue;

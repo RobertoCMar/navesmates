@@ -31,8 +31,8 @@ class level0 extends gameArea{
 
 const game = new level0({
     image: player.down, 
-    width: 100, 
-    height: 75, 
+    width: 60, 
+    height: 100, 
     speed: 5, 
     damage: 50,
     images: player 
@@ -44,7 +44,8 @@ game.addEntity({
     image: basicEnemy,
     height: 100,
     width: 80,
-    health: 300
+    health: 300,
+    damage: 1
 })
 
 async function trees(){
