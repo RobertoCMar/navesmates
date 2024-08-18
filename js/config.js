@@ -122,7 +122,7 @@ class gameArea{
             if(answer != 4){
                 this.player.minusHealth(this.player.damage);
             }
-            this.player.doAtk(() => this.player.specialAtk(), this.player.atkCooldown)
+            this.player.doAtk(() => this.player.specialAtk(), this.player.atkCooldown * 10)
         }
     } 
     }
@@ -529,15 +529,9 @@ class character extends sprite{
 
 class mainCharacter extends character{
     async specialAtk(){
-    let temp = this.atkColor;
-    let tempD = this.damage
-    let tempCD = this.crtDamage;
-    this.atkColor = "red";
-    this.damage *= 3;  
-    this.crtDamage = this.damage * 2;
-    this.basicAtk();
-    this.atkColor = temp;
-    this.damage = tempD; 
-    this.crtDamage = tempCD;
+        let temp = this.atkColor;
+        this.atkColor = "red";
+        this.basicAtk(this.damage * 3, this.damage * 3 * 1.5);
+        this.atkColor = temp;
 }
 }
