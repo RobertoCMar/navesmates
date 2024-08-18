@@ -58,7 +58,7 @@ function drawTrees() {
 class gameArea{
    constructor({x = Math.floor(canvas.width * 0.5), y = Math.floor(canvas.height * 0.5), width, height, image, 
         direction = "right", speed = 10, health = 100, damage = 10, crtDamage = damage*1.5, 
-        atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCooldown = 1000, atkColor = "yellow",
+        atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCD = 1000, atkColor = "yellow",
         colorLife = "green", colorLifeB = "red", healthBarHeight = 5, images
    }){
         this.keyPressed = false,
@@ -66,7 +66,7 @@ class gameArea{
         this.player = new mainCharacter({
             x, y, width, height, speed, image, direction, 
             speed, health, damage, crtDamage, 
-            atkWidth, atkHeight, atkSpeed, atkCooldown, atkColor,
+            atkWidth, atkHeight, atkSpeed, atkCD, atkColor,
             colorLife, colorLifeB, healthBarHeight, 
             multiImg: true, images
         }),
@@ -77,13 +77,13 @@ class gameArea{
     addEntity(
         {x, y, width, height, image, direction,
         speed = 10, health = 100, damage = 10, crtDamage = damage*1.5, 
-        atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCooldown = 1000, atkColor = "yellow",
+        atkWidth = 50, atkHeight = 25, atkSpeed = 25, atkCD = 1000, atkColor = "yellow",
         colorLife = "green", colorLifeB = "red", healthBarHeight = 5}
     ) {
         const entity = new character({
             x, y, width, height, image, direction, 
             speed, health, damage, crtDamage, 
-            atkWidth, atkHeight, atkSpeed, atkCooldown, atkColor,
+            atkWidth, atkHeight, atkSpeed, atkCD, atkColor,
             colorLife, colorLifeB,  healthBarHeight   
         });
         this.entities.push(entity);
@@ -116,13 +116,13 @@ class gameArea{
             this.player.moveX(-1);
             this.player.direction = "left";
         } else if(this.key == "Space" && !this.player.shooting){
-            this.player.doAtk(() => this.player.basicAtk(), this.player.atkCooldown)
-        } else if(this.key == "KeyX" && !this.player.shooting){
+            this.player.doAtk(() => this.player.basicAtk(), this.player.atkCD)
+        } else if(this.key == "KeyX" && !this.player.shooting && !this.player.didSpecialAtk){
             let answer = parseInt(prompt("2 + 2"));
             if(answer != 4){
                 this.player.minusHealth(this.player.damage);
             }
-            this.player.doAtk(() => this.player.specialAtk(), this.player.atkCooldown * 10)
+            this.player.doAtk(() => this.player.specialAtk(), this.player.atkCD * 10)
         }
     } 
     }
@@ -193,7 +193,7 @@ class character extends sprite{
     constructor({
             x, y, width, height, image, direction ,
             speed, health, damage, crtDamage, 
-            atkWidth, atkHeight, atkSpeed, atkCooldown, atkColor,
+            atkWidth, atkHeight, atkSpeed, atkCD, atkColor,
             colorLife, colorLifeB, healthBarHeight, 
             multiImg = false, images
         }) {
@@ -210,7 +210,7 @@ class character extends sprite{
         this.atkWidth = atkWidth
         this.atkHeight = atkHeight
         this.atkSpeed = atkSpeed
-        this.atkCooldown = atkCooldown
+        this.atkCD = atkCD
         this.atkColor = atkColor
         this.colorLife = colorLife
         this.colorLifeB = colorLifeB
@@ -528,6 +528,34 @@ class character extends sprite{
 }
 
 class mainCharacter extends character{
+    constructor({
+        x, y, width, height, image, direction ,
+        speed, health, damage, crtDamage, 
+        atkWidth, atkHeight, atkSpeed, atkCD, specialAtkCD, atkColor,
+        colorLife, colorLifeB, healthBarHeight, 
+        multiImg = false, images, 
+    }){
+        super({x, y, width, height, image, direction,
+            speed, health, damage, crtDamage, 
+            atkWidth, atkHeight, atkSpeed, atkCD, specialAtkCD, atkColor,
+            colorLife, colorLifeB, healthBarHeight, 
+            multiImg, images, 
+        });
+        this.didSpecialAtk = false;
+    }
+
+    async doAtk(atk, cooldown) {
+        this.shooting = true;
+        if(cooldown > this.atkCD)
+            this.didSpecialAtk = true;
+        atk()
+        await new Promise(resolve => setTimeout(resolve, this.atkCD))
+        this.shooting = false;
+        if(cooldown > this.atkCD){
+            await new Promise(resolve => setTimeout(resolve, cooldown - this.atkCD));
+            this.didSpecialAtk = false;
+        }
+    }
     async specialAtk(){
         let temp = this.atkColor;
         this.atkColor = "red";
