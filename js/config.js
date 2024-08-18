@@ -408,65 +408,65 @@ class character extends sprite{
         this.shooting = false;
     }
 
-   async basicAtk(){
- //ayuda jefesita :,,v       const shoot = new sprite(x+50, y+12, 50, 25, 20, "yellow")
+   async basicAtk(damage=this.damage, crtDamage=this.crtDamage){
         let shoot;
-        const x = this.x;
-        const y = this.y;
-        const direction = this.direction
-        const damage = this.damage;
-        const crtDamage = this.crtDamage;
+        let obj = this;
+        const x = obj.x;
+        const y = obj.y;
+        const direction = obj.direction
+//        const damage = obj.damage;
+//        const crtDamage = this.crtDamage;
         switch (direction){
             case "up":
                 shoot = new sprite({
-                    x: centerX(this.midX, this.atkHeight), 
+                    x: centerX(obj.midX, obj.atkHeight), 
                     y: y, 
-                    width: this.atkHeight, 
-                    height: this.atkWidth,
-                    speed: this.atkSpeed, 
-                    color: this.atkColor
+                    width: obj.atkHeight, 
+                    height: obj.atkWidth,
+                    speed: obj.atkSpeed, 
+                    color: obj.atkColor
                 }); 
             break;
             case "down":
                 shoot = new sprite({
-                    x: centerX(this.midX, this.atkHeight), 
+                    x: centerX(obj.midX, obj.atkHeight), 
                     y: y, 
-                    width: this.atkHeight, 
-                    height: this.atkWidth, 
-                    speed: this.atkSpeed, 
-                    color: this.atkColor
+                    width: obj.atkHeight, 
+                    height: obj.atkWidth, 
+                    speed: obj.atkSpeed, 
+                    color: obj.atkColor
                 });
             break;
             case "left":
                 shoot = new sprite({
                     x: x, 
-                    y: centerY(this.midY, this.atkHeight), 
-                    width: this.atkWidth, 
-                    height: this.atkHeight, 
-                    speed: this.atkSpeed, 
-                    color: this.atkColor
+                    y: centerY(obj.midY, obj.atkHeight), 
+                    width: obj.atkWidth, 
+                    height: obj.atkHeight, 
+                    speed: obj.atkSpeed, 
+                    color: obj.atkColor
                 });
             break;
             case "right":
                 shoot = new sprite({
                    x: x, 
-                   y: centerY(this.midY, this.atkHeight), 
-                   width: this.atkWidth, 
-                   height: this.atkHeight, 
-                   speed: this.atkSpeed, 
-                   color: this.atkColor
+                   y: centerY(obj.midY, obj.atkHeight), 
+                   width: obj.atkWidth, 
+                   height: obj.atkHeight, 
+                   speed: obj.atkSpeed, 
+                   color: obj.atkColor
                 });
             break;
         }
         shoot.draw();
         while (shoot.x < canvas.width-60 && shoot.y < canvas.height - 60 && shoot.y > 0 && shoot.x > 0) {
             for(let npc of game.entities){
-                if (this !== game.player && npc !== game.player) {
+                if (obj !== game.player && npc !== game.player) {
                     continue;
                 }
                 if(isInContact(shoot.x, shoot.y, shoot.width, shoot.height, npc.x, npc.y, npc.width, npc.height)){
                     //se forma un circulo con radio
-                    if(this == npc){
+                    if(obj == npc){
                         continue;
                     }
                     let whatDamage = Math.random() * 4
